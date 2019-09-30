@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  mysql:
+    image: mysql:5.7.27
+    restart: always
+    networks:
+      - wordpress-net
+    volumes:
+      - mysql_volume:/var/lib/mysql
+    ports:
+      - 13300-13400:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root-pass
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress-pass
+
+   
+  wordpress:
+    image: wordpress:5.2.3-php7.3-apache
+    restart: always
+    depends_on:
+      - mysql
+    networks:
+      - wordpress-net
+    ports:
+      - 8000-8100:80
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress-pass
+      WORDPRESS_DB_NAME: wordpress
+
+networks:
+  wordpress-net:
+    driver: bridge
+
+volumes:
+  mysql_volume:
+    driver: local 
