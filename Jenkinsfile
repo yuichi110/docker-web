@@ -6,10 +6,12 @@ pipeline {
   agent any
   stages {
     stage('check docker') {
-      sh "docker --version"
-      sh "docker-compose --version"
-      sh "docker -H ssh://${TEST_HOST} version"
-      sh "docker-compose -H ssh://${TEST_HOST} version"
+      steps {
+        sh "docker --version"
+        sh "docker-compose --version"
+        sh "docker -H ssh://${TEST_HOST} version"
+        sh "docker-compose -H ssh://${TEST_HOST} version"
+      }
     }
 
     stage('pull') {
