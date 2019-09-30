@@ -1,5 +1,7 @@
 pipeline {
-  stage('first'){
-    sh 'ls'
+  stages {
+    stage('first'){
+      sh 'ls'
+    }
   }
 }
