@@ -25,7 +25,7 @@ services:
     networks:
       - wordpress-net
     ports:
-      - 8000-8100:80
+      - 10000-10100:80
     environment:
       WORDPRESS_DB_HOST: mysql:3306
       WORDPRESS_DB_USER: wordpress
