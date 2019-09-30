@@ -5,7 +5,7 @@ pipeline {
 
   agent any
   stages {
-    stage('check docker') {
+    stage('check docker environment') {
       steps {
         sh "docker --version"
         sh "docker-compose --version"
@@ -14,12 +14,16 @@ pipeline {
       }
     }
 
-    stage('hello') {
+    stage('build and test at test host') {
       steps {
-        sh "pwd"
-        sh "ls"
+        sh "docker-compose -H ssh://${TEST_HOST} up -d"
       }
     }
 
+    stage('cleanup at test host') {
+      steps {
+        sh "docker-compose -H ssh://${TEST_HOST} stop"
+      }
+    }
   }
 }
