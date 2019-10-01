@@ -9,7 +9,7 @@ services:
     depends_on:
       - redis
     ports:
-      - 80:80
+      - 8000-8100:80
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
