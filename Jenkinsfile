@@ -17,7 +17,10 @@ pipeline {
 
     stage('build/test') {
       steps {
+        sh "echo 'BUILD_NUMBER=${BUILD_NUMBER}' > .env"
+        sh "cat .env"
         sh "cat docker-compose.build.yml > docker-compose.yml"
+        sh "cat docker-compose.yml"
         sh "docker-compose -H ssh://${TEST_HOST} stop"
         sh "docker-compose -H ssh://${TEST_HOST} build"
         sh "docker-compose -H ssh://${TEST_HOST} up -d"
@@ -36,6 +39,7 @@ pipeline {
     stage('deploy') {
       steps {
         sh "cat docker-compose.prod.yml > docker-compose.yml"
+        sh "cat docker-compose.yml"
         //sh "docker-compose -H ssh://${TEST_HOST} stop"
         //sh "docker -H ssh://${TEST_HOST} container prune -f"
       }

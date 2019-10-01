@@ -6,6 +6,7 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile
+      image: mykvsapp:${BUILD_NUMBER}
     restart: always
     depends_on:
       - redis
