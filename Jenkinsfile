@@ -18,6 +18,8 @@ pipeline {
     stage('build/test') {
       steps {
         sh "cat docker-compose.build.yml > docker-compose.yml"
+        sh "docker-compose -H ssh://${TEST_HOST} stop"
+        sh "docker-compose -H ssh://${TEST_HOST} build"
         sh "docker-compose -H ssh://${TEST_HOST} up -d"
         sh "docker -H ssh://${TEST_HOST} container ls"
       }
