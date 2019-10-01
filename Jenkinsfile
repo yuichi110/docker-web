@@ -22,8 +22,8 @@ pipeline {
 
     stage('cleanup') {
       steps {
-        sh "docker-compose -H ssh://${TEST_HOST} stop"
-        sh "docker -H ssh://${TEST_HOST} container prune -f"
+        //sh "docker-compose -H ssh://${TEST_HOST} stop"
+        //sh "docker -H ssh://${TEST_HOST} container prune -f"
       }
     }
   }

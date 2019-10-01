@@ -1,43 +1,27 @@
-# test02
-
 version: '3.7'
 
 services:
-  mysql:
-    image: mysql:5.7.27
-    restart: always
-    networks:
-      - wordpress-net
-    volumes:
-      - mysql_volume:/var/lib/mysql
-    ports:
-      - 13300-13400:3306
-    environment:
-      MYSQL_ROOT_PASSWORD: root-pass
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress-pass
-
-   
-  wordpress:
-    image: wordpress:5.2.3-php7.3-apache
+  appserver:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
     restart: always
     depends_on:
-      - mysql
-    networks:
-      - wordpress-net
+      - redis
     ports:
-      - 10000-10100:80
+      - 8000-8100:80
     environment:
-      WORDPRESS_DB_HOST: mysql:3306
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress-pass
-      WORDPRESS_DB_NAME: wordpress
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 0
 
-networks:
-  wordpress-net:
-    driver: bridge
+  redis:
+    image: redis:5.0.6-alpine3.10
+    restart: always
+    volumes:
+      - redis_volume:/data
 
 volumes:
-  mysql_volume:
+  redis_volume:
     driver: local 
+
