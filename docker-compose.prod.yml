@@ -2,27 +2,42 @@
 version: '3.7'
 
 services:
-  appserver:
-    build:
-      context: ./app
-      dockerfile: Dockerfile
+  # Web: Static and Reverse Proxy
+  # HTMLなどの静的なファイルの処理
+  # /api/v1/宛の通信はappserverに流す
+  webs: 
+    image: mykvs-web:${BUILD_NUMBER}
+    container_name: mykvs-web
     restart: always
     depends_on:
-      - redis
+      - app
     ports:
       - 8000-8100:80
+
+  # App: Rest API for Key Value Store
+  # Webから流されたREST APIの処理を担当
+  # APIを解釈し、裏のRedis(DB)を操作する。
+  appserver:
+    image: mykvs-app:${BUILD_NUMBER}
+    container_name: mykvs-app
+    restart: always
+    depends_on:
+      - db
     environment:
-      REDIS_HOST: redis
+      REDIS_HOST: db
       REDIS_PORT: 6379
       REDIS_DB: 0
 
-  redis:
+  # DB: Key Value Store
+  # AppからのRedis操作への応答
+  # Redisをそのまま利用
+  db:
     image: redis:5.0.6-alpine3.10
     restart: always
+    container_name: mykvs-db
     volumes:
       - redis_volume:/data
 
 volumes:
   redis_volume:
     driver: local 
-
