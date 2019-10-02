@@ -40,7 +40,7 @@ services:
   dbserver:
     image: redis:5.0.6-alpine3.10
     restart: always
-    container: mykvs-db
+    container_name: mykvs-db
     volumes:
       - redis_volume:/data
 
