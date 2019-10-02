@@ -1,46 +1,26 @@
 import os, json, redis
 from flask import Flask, jsonify, request
 
-# Redis
+###
+### Connection to Redis
+###
+
 def get_redis():
   host = os.environ['REDIS_HOST']
   port = int(os.environ['REDIS_PORT'])
   db = int(os.environ['REDIS_DB'])
   return redis.Redis(host=host, port=port, db=db)
+
 REDIS = get_redis()
 
-# Flask
+
+###
+### Flask
+###
+
 app = Flask('')
 
-def success(d):
-  return (jsonify(d), 200)
-
-def error(code):
-  message = {
-    400: "Bad Request. Key and Value must be Alnum.",
-    404: "Resource doesn't exist.",
-    409: "Resource already exist.",
-  }
-  d = {'error':message[code], 'code':code}
-  return (jsonify(d), code)
-
-@app.errorhandler(404)
-def internal_server_error(error):
-  return html_404
-
-@app.errorhandler(405)
-def internal_server_error(error):
-  d = {'error':'Method not allowed.', 'code':405}
-  return (jsonify(d), 405)
-
-@app.errorhandler(500)
-def internal_server_error(error):
-  d = {'error':'Server internal error.', 'code':500}
-  return (jsonify(d), 500)
-
-@app.route('/', methods=['GET'])
-def page_index():
-  return html_index
+# API
 
 @app.route('/api/v1/keys/', methods=['GET'])
 def api_keys():
@@ -82,87 +62,41 @@ def api_key(key):
       return error(404)
     return success({})
 
-  fun = {'GET':get, 'POST':post, 'PUT':put, 'DELETE':delete}[request.method]
-  return fun()
+  fdict = {'GET':get, 'POST':post, 'PUT':put, 'DELETE':delete}
+  return fdict[request.method]()
 
-# Html
-html_index = '''<!DOCTYPE html>
-<html>
-  <head>
-    <title>My KVS Service</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script>
-var refreshTable = function(){
-  $.ajax({type:'get', url:'/api/v1/keys/', success:function(j){
-    $('#table').empty()
-    var hline = '<tr><th scope="col">#</th><th scope="col">Key</th><th scope="col">Value</th></tr>'
-    $('#table').append(hline)
-    var index = 1
-    for(var key in j){
-      var line = '<tr><th scope="row">' + index + '</th><td>' + key + '</td><td>' + j[key] + '</td></tr>'
-      $('#table').append(line)
-      index++
-    }
-  }})
-}
-$(function(){
-  $('#get-button').click(function(){
-    $.ajax({type:'get', url:'/api/v1/keys/'+$('#key').val(),
-      success:function(j){alert(JSON.stringify(j, null, '  '))}, 
-      error:function(d){alert(d.responseText)}})
-  })
-  $('#post-button').click(function(){
-    $.ajax({type:'post', url:'/api/v1/keys/'+$('#key').val(), data:$('#value').val(),
-      success:function(d){refreshTable()}, error:function(d){alert(d.responseText)}})
-  })
-  $('#put-button').click(function(){
-    $.ajax({type:'put', url:'/api/v1/keys/'+$('#key').val(), data:$('#value').val(),
-      success:function(d){refreshTable()}, error:function(d){alert(d.responseText)}})
-  })
-  $('#delete-button').click(function(){
-    $.ajax({type:'delete', url:'/api/v1/keys/'+$('#key').val(),
-      success:function(d){refreshTable()}, error:function(d){alert(d.responseText)}})
-  })
-  $('#key').keyup(function(){
-    $('#key-text').text('URL: /api/v1/keys/' + $('#key').val())
-  })
-  $('#value').keyup(function(){
-    $('#value-text').text('Body: ' + $('#value').val())
-  })
-  refreshTable()
-  setInterval(refreshTable, 5000)
-})
-    </script>
-  </head>
-  <body class="container">
-    <h1 class="h3" style="padding-top:10px"><a href="/">My KVS Service</a></h1>
-    <h2 class="h5" style="padding-top:20px">API呼び出し</h2>
-    <div class="row">
-      <div class="form-group col"><label for="key">Key(英数字のみ)</label>
-        <input class="form-control" type="text" id="key"></div>
-      <div class="form-group col"><label for="value">Value(英数字のみ)</label>
-        <input class="form-control" type="text" id="value"></div>
-    </div>
-    <p id="key-text">URL: /api/v1/keys/</p>
-    <p id="value-text">Body:</p>
-    <p>HTTP Request: <button id="get-button" type="submit" class="btn btn-primary">GET</button>
-    <button id="post-button" type="submit" class="btn btn-success">POST</button>
-    <button id="put-button" type="submit" class="btn btn-warning">PUT</button>
-    <button id="delete-button" type="submit" class="btn btn-danger">DELETE</button></p>
-    <h2 class="h5" style="padding-top:20px">現在のKeyとValueの確認</h2>
-    <table class="table" id="table"><table>
-  </body>
-</html>'''
+# Utility
 
-html_404 = '''<!DOCTYPE html>
-<html>
-  <head><title>404</title>
-    <script>setTimeout(function(){location.href = '/';}, 3000);</script></head>
-  <body><p>404 Page Not Found</p><p>Redirecting to <a href="/">top page</a>...</p></body>
-</html>'''
+def success(d):
+  return (jsonify(d), 200)
 
-# Start KVS Service App
+def error(code):
+  message = {
+    400: "Bad Request. Key(URL) and Value(Body) must be Alnum",
+    404: "Resource not found",
+    409: "Conflict. Resource already exist",
+  }
+  d = {'error':message[code], 'code':code}
+  return (jsonify(d), code)
+
+# Error Handling
+
+@app.errorhandler(404)
+def api_not_found_error(error):
+  d = {'error':"API not found", 'code':404}
+  return (jsonify(d), 404)
+
+@app.errorhandler(405)
+def method_not_allowed_error(error):
+  d = {'error':'Method not allowed', 'code':405}
+  return (jsonify(d), 405)
+
+@app.errorhandler(500)
+def internal_server_error(error):
+  d = {'error':'Server internal error', 'code':500}
+  return (jsonify(d), 500)
+
+
+# Start
+
 app.run(debug=False, host='0.0.0.0', port=80)
