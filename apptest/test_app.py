@@ -29,23 +29,23 @@ BASEURL = 'http://app/api/v1'
 ## KEYS ##
 ##########
 
-def test_get_keys():
+def test_keys_get():
   r = get(f'{BASEURL}/keys/')
   assert r.status_code == 200
 
-def test_get_keys_wrongurl():
+def test_keys_get_wrongurl():
   r = get(f'{BASEURL}/key/')
   assert r.status_code == 404
 
-def test_post_keys():
+def test_keys_post():
   r = post(f'{BASEURL}/keys/')
   assert r.status_code == 405
 
-def test_put_keys():
+def test_keys_put():
   r = put(f'{BASEURL}/keys/')
   assert r.status_code == 405
 
-def test_delete_keys():
+def test_keys_delete():
   r = delete(f'{BASEURL}/keys/')
   assert r.status_code == 405
 
@@ -54,18 +54,18 @@ def test_delete_keys():
 ## KEY GET ##
 #############
 
-def def_get_key_exist():
+def test_key_get_exist():
   clean_and_add_keys()
   r = get(f'{BASEURL}/keys/apple')
   assert r.status_code == 200
   assert r.json() == {'apple':'red'}
 
-def def_get_key_notexist():
+def test_key_get_notexist():
   clean_and_add_keys()
   r = get(f'{BASEURL}/keys/lemon')
   assert r.status_code == 404
 
-def def_get_key_notalnum():
+def test_key_get_notalnum():
   clean_and_add_keys()
   r = get(f'{BASEURL}/keys/ap_le')
   assert r.status_code == 400
@@ -75,25 +75,25 @@ def def_get_key_notalnum():
 ## KEY POST ##
 ##############
 
-def test_post_key_notexist():
+def test_key_post_notexist():
   clean_and_add_keys()
   r = post(f'{BASEURL}/keys/grape', data='purple')
   assert r.status_code == 200
   assert r.json() == {'grape':'purple'}
 
-def test_post_key_exist():
+def test_key_post_exist():
   clean_and_add_keys()
   r = post(f'{BASEURL}/keys/apple', data='green')
   assert r.status_code == 409
 
-def def_post_key_notalnum1():
+def test_key_post_notalnum1():
   clean_and_add_keys()
-  r = post(f'{BASEURL}/keys/gr_pe' data='purple')
+  r = post(f'{BASEURL}/keys/gr_pe', data='purple')
   assert r.status_code == 400
 
-def def_post_key_notalnum2():
+def test_key_post_notalnum2():
   clean_and_add_keys()
-  r = post(f'{BASEURL}/keys/grape' data='pu_ple')
+  r = post(f'{BASEURL}/keys/grape', data='pu_ple')
   assert r.status_code == 400
 
 
@@ -101,26 +101,26 @@ def def_post_key_notalnum2():
 ## KEY PUT ##
 #############
 
-def test_put_key_notexist():
+def test_key_put_notexist():
   clean_and_add_keys()
-  r = post(f'{BASEURL}/keys/grape', data='purple')
+  r = put(f'{BASEURL}/keys/grape', data='purple')
   assert r.status_code == 200
   assert r.json() == {'grape':'purple'}
 
-def test_put_key_exist():
+def test_key_put_exist():
   clean_and_add_keys()
   r = put(f'{BASEURL}/keys/apple', data='green')
   assert r.status_code == 200
   assert r.json() == {'apple':'green'}
 
-def def_put_key_notalnum1():
+def test_key_put_notalnum1():
   clean_and_add_keys()
-  r = put(f'{BASEURL}/keys/gr_pe' data='purple')
+  r = put(f'{BASEURL}/keys/gr_pe', data='purple')
   assert r.status_code == 400
 
-def def_put_key_notalnum2():
+def test_key_put_notalnum2():
   clean_and_add_keys()
-  r = put(f'{BASEURL}/keys/grape' data='pu_ple')
+  r = put(f'{BASEURL}/keys/grape', data='pu_ple')
   assert r.status_code == 400
 
 
@@ -128,8 +128,30 @@ def def_put_key_notalnum2():
 ## KEY DELETE ##
 ################
 
-def test_delete():
-  pass
+def test_key_delete_exist():
+  clean_and_add_keys()
+  r = delete(f'{BASEURL}/keys/apple')
+  assert r.status_code == 200
+  assert r.json() == {}
+
+def test_key_delete_notexist():
+  clean_and_add_keys()
+  r = delete(f'{BASEURL}/keys/grape')
+  assert r.status_code == 404
+
+def test_key_delete_notalnum():
+  clean_and_add_keys()
+  r = delete(f'{BASEURL}/keys/ap_le')
+  assert r.status_code == 400
+
+
+###############
+## TEST END ###
+###############
+
+def test_clean():
+  clean()
+  assert True
 
 
 ########################
@@ -146,5 +168,7 @@ def clean():
 
 def clean_and_add_keys():
   clean()
-  put(f'{BASEURL}/keys/apple', data='red')
-  put(f'{BASEURL}/keys/banana', data='yellow')
+  r = put(f'{BASEURL}/keys/apple', data='red')
+  assert r.status_code == 200
+  r = put(f'{BASEURL}/keys/banana', data='yellow')
+  assert r.status_code == 200

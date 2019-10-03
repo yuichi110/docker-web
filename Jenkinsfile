@@ -46,10 +46,16 @@ pipeline {
 
     stage('Test Containers') {
       steps {
-        sh "docker ssh://${BUILD_HOST} -f container exec mykvs-apptest pytest test_app.py"
-        sh "docker ssh://${BUILD_HOST} -f container exec mykvs-webtest pytest test_static.py"
-        sh "docker ssh://${BUILD_HOST} -f container exec mykvs-webtest pytest test_selenium.py"
+        sh "docker ssh://${BUILD_HOST} -f container exec mykvs-apptest pytest -v test_app.py"
+        sh "docker ssh://${BUILD_HOST} -f container exec mykvs-webtest pytest -v test_static.py"
+        sh "docker ssh://${BUILD_HOST} -f container exec mykvs-webtest pytest -v test_selenium.py"
         sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml stop"
+      }
+    }
+
+    stage('Register images') {
+      steps {
+        sh "echo 'upload'"
       }
     }
 
