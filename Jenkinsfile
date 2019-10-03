@@ -21,7 +21,7 @@ pipeline {
         sh "docker-compose --version | tee dcv-jenkins"
         sh "docker-compose -H ssh://${BUILD_HOST} --version | tee dcv-build"
         //sh "docker-compose -H ssh://${PROD_HOST} --version | tee dcv-prod"
-        sh "test '`cat dcv-local`' = '`cat dcv-build`'"
+        sh 'test "`cat dcv-local`" = "`cat dcv-build`"'
         //sh "test '`cat dcv-local`' = '`cat dcv-prod`'"
       }
     }
@@ -53,7 +53,7 @@ pipeline {
       }
     }
 
-    stage('Register images') {
+    stage('Register Images') {
       steps {
         sh "echo 'upload'"
       }
