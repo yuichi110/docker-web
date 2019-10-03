@@ -11,17 +11,17 @@ pipeline {
         sh "docker --version | tee .dv-jenkins"
         sh "docker -H ssh://${BUILD_HOST} --version | tee .dv-build"
         //sh "docker -H ssh://${PROD_HOST} --version | tee dv-prod"
-        sh "test '`cat .dv-jenkins`' = '`cat .dv-build`'"
+        sh 'test "`cat .dv-jenkins`" = "`cat .dv-build`"'
         //sh "test '`cat dv-local`' = '`cat dv-prod`'"
       }
     }
 
     stage('Check docker-compose version') {
       steps {
-        sh "docker-compose --version | tee dcv-jenkins"
-        sh "docker-compose -H ssh://${BUILD_HOST} --version | tee dcv-build"
+        sh "docker-compose --version | tee .dcv-jenkins"
+        sh "docker-compose -H ssh://${BUILD_HOST} --version | tee .dcv-build"
         //sh "docker-compose -H ssh://${PROD_HOST} --version | tee dcv-prod"
-        sh 'test "`cat dcv-local`" = "`cat dcv-build`"'
+        sh 'test "`cat .dcv-jenkins`" = "`cat .dcv-build`"'
         //sh "test '`cat dcv-local`' = '`cat dcv-prod`'"
       }
     }
