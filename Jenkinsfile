@@ -8,10 +8,10 @@ pipeline {
   stages {
     stage('Check docker version') {
       steps {
-        sh "docker --version | tee dv-jenkins"
-        sh "docker -H ssh://${BUILD_HOST} --version | tee dv-build"
+        sh "docker --version | tee .dv-jenkins"
+        sh "docker -H ssh://${BUILD_HOST} --version | tee .dv-build"
         //sh "docker -H ssh://${PROD_HOST} --version | tee dv-prod"
-        sh "test '`cat dv-local`' = '`cat dv-build`'"
+        sh "test '`cat .dv-jenkins`' = '`cat .dv-build`'"
         //sh "test '`cat dv-local`' = '`cat dv-prod`'"
       }
     }
