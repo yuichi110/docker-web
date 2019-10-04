@@ -32,10 +32,10 @@ pipeline {
       steps {
         sh "test -f ~/.docker/config.json"
         sh "cat ~/.docker/config.json | grep docker.io"
-        sh "ssh ${BUILD_HOST} test -f ~/.docker/config.json"
-        sh "ssh ${BUILD_HOST} 'cat ~/.docker/config.json | grep docker.io'"
-        sh "ssh ${PROD_HOST} test -f ~/.docker/config.json"
-        sh "ssh ${PROD_HOST} 'cat ~/.docker/config.json | grep docker.io'"
+        sh "ssh ${BUILD_HOST} test -f /root/.docker/config.json"
+        sh "ssh ${BUILD_HOST} 'cat /root/.docker/config.json | grep docker.io'"
+        sh "ssh ${PROD_HOST} test -f /root/.docker/config.json"
+        sh "ssh ${PROD_HOST} 'cat /root/.docker/config.json | grep docker.io'"
       }
     }
 
