@@ -69,8 +69,8 @@ pipeline {
 
     stage('Register Images') {
       steps {
-        sh "docker -H ssh://${BUILD_HOST} tag mykvs_app ${DHUB_USER}/mykvs_web:${BUILD_NUMBER}"
-        sh "docker -H ssh://${BUILD_HOST} tag mykvs_web ${DHUB_USER}/mykvs_app:${BUILD_NUMBER}"
+        sh "docker -H ssh://${BUILD_HOST} tag mykvs_web ${DHUB_USER}/mykvs_web:${BUILD_NUMBER}"
+        sh "docker -H ssh://${BUILD_HOST} tag mykvs_app ${DHUB_USER}/mykvs_app:${BUILD_NUMBER}"
         sh "docker -H ssh://${BUILD_HOST} push ${DHUB_USER}/mykvs_web:${BUILD_NUMBER}"
         sh "docker -H ssh://${BUILD_HOST} push ${DHUB_USER}/mykvs_app:${BUILD_NUMBER}"
       }
