@@ -38,11 +38,13 @@ def api_keys():
 @app.route('/api/v1/keys/<key>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def api_key(key):
   if not isalnum(key):
-    return error(400)
+    return error(400.1)
+  body = request.get_data().decode().strip()
   if request.method in ['POST', 'PUT']:
-    body = request.get_data().decode().strip()
+    if body == '':
+      return error(400.2)
     if not isalnum(body):
-      return error(400)
+      return error(400.3)
 
   def get():
     value = REDIS.get(key)
@@ -76,12 +78,14 @@ def success(d):
 
 def error(code):
   message = {
-    400: "Bad Request. Key(URL) and Value(Body) must be Alnum",
+    400.1: "Bad Request. Key must be Alnum",
+    400.2: "Bad Request. POST/PUT need Value on body",
+    400.3: "Bad Request. Value must be Alnum",
     404: "Resource not found",
     409: "Conflict. Resource already exist",
   }
-  d = {'error':message[code], 'code':code}
-  return (jsonify(d), code)
+  d = {'error':message[code], 'code':int(code)}
+  return (jsonify(d), int(code))
 
 # Error Handling
 
