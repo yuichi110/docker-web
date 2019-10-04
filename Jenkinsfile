@@ -61,9 +61,9 @@ pipeline {
 
     stage('Test Containers') {
       steps {
-        sh "docker -H ssh://${BUILD_HOST} container exec mykvs-apptest pytest -v test_app.py"
-        sh "docker -H ssh://${BUILD_HOST} container exec mykvs-webtest pytest -v test_static.py"
-        sh "docker -H ssh://${BUILD_HOST} container exec mykvs-webtest pytest -v test_selenium.py"
+        sh "docker -H ssh://${BUILD_HOST} container exec mykvs_apptest pytest -v test_app.py"
+        sh "docker -H ssh://${BUILD_HOST} container exec mykvs_webtest pytest -v test_static.py"
+        sh "docker -H ssh://${BUILD_HOST} container exec mykvs_webtest pytest -v test_selenium.py"
       }
     }
 
@@ -79,8 +79,9 @@ pipeline {
     stage('Deploy Image') {
       steps {
         sh "cat docker-compose.prod.yml"
-        //sh "docker-compose -H ssh://${PROD_HOST} -f docker-compose.prod.yml up -d"
-        //sh "docker -H ssh://${PROD_HOST} container ls"
+        sh "docker-compose -H ssh://${PROD_HOST} -f docker-compose.prod.yml build"
+        sh "docker-compose -H ssh://${PROD_HOST} -f docker-compose.prod.yml up -d"
+        sh "docker -H ssh://${PROD_HOST} container ls"
       }
     }
   }
