@@ -1,18 +1,20 @@
 pipeline {
   environment {
+    DHUB_USER = "yuichi110"
     BUILD_HOST = "root@172.30.0.102"
     PROD_HOST = "root@172.30.0.103"
   }
 
   agent any
   stages {
+
     stage('Check docker version') {
       steps {
         sh "docker --version | tee .dv-jenkins"
         sh "docker -H ssh://${BUILD_HOST} --version | tee .dv-build"
-        //sh "docker -H ssh://${PROD_HOST} --version | tee dv-prod"
+        sh "docker -H ssh://${PROD_HOST} --version | tee dv-prod"
         sh 'test "`cat .dv-jenkins`" = "`cat .dv-build`"'
-        //sh "test '`cat dv-local`' = '`cat dv-prod`'"
+        sh 'test "`cat .dv-jenkins`" = "`cat .dv-prod`"'
       }
     }
 
@@ -20,9 +22,20 @@ pipeline {
       steps {
         sh "docker-compose --version | tee .dcv-jenkins"
         sh "docker-compose -H ssh://${BUILD_HOST} --version | tee .dcv-build"
-        //sh "docker-compose -H ssh://${PROD_HOST} --version | tee dcv-prod"
+        sh "docker-compose -H ssh://${PROD_HOST} --version | tee dcv-prod"
         sh 'test "`cat .dcv-jenkins`" = "`cat .dcv-build`"'
-        //sh "test '`cat dcv-local`' = '`cat dcv-prod`'"
+        sh 'test "`cat .dcv-jenkins`" = "`cat .dcv-prod`"'
+      }
+    }
+
+    stage('Check login status') {
+      steps {
+        sh "test -f ~/.docker/config.json"
+        sh "cat ~/.docker/config.json | grep docker.io"
+        sh "ssh ${BUILD_HOST} test -f ~/.docker/config.json"
+        sh "ssh ${BUILD_HOST} 'cat ~/.docker/config.json | grep docker.io'"
+        sh "ssh ${PROD_HOST} test -f ~/.docker/config.json"
+        sh "ssh ${PROD_HOST} 'cat ~/.docker/config.json | grep docker.io'"
       }
     }
 
@@ -50,7 +63,6 @@ pipeline {
         sh "docker -H ssh://${BUILD_HOST} container exec mykvs-apptest pytest -v test_app.py"
         sh "docker -H ssh://${BUILD_HOST} container exec mykvs-webtest pytest -v test_static.py"
         sh "docker -H ssh://${BUILD_HOST} container exec mykvs-webtest pytest -v test_selenium.py"
-        //sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml stop"
       }
     }
 
