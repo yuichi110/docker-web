@@ -107,7 +107,7 @@ def test_key_post_notalnum3():
 
 def test_key_post_notalnum4():
   clean_and_add_keys()
-  r = post(f'{BASEURL}/keys/grape', data='あいうえお')
+  r = post(f'{BASEURL}/keys/grape', data='あいうえお'.encode())
   assert r.status_code == 400
 
 #############
@@ -143,7 +143,7 @@ def test_key_put_notalnum3():
 
 def test_key_put_notalnum4():
   clean_and_add_keys()
-  r = put(f'{BASEURL}/keys/grape', data='あいうえお')
+  r = put(f'{BASEURL}/keys/grape', data='あいうえお'.encode())
   assert r.status_code == 400
 
 ################
