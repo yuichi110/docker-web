@@ -5,9 +5,9 @@ services:
   # Web: Static and Reverse Proxy
   # HTMLなどの静的なファイルの処理
   # /api/v1/宛の通信はappserverに流す
-  webs: 
-    image: mykvs-web:${BUILD_NUMBER}
-    container_name: mykvs-web
+  web: 
+    image: ${DHUB_USER}/mykvs_web:${BUILD_NUMBER}
+    container_name: mykvs_web
     restart: always
     depends_on:
       - app
@@ -17,9 +17,9 @@ services:
   # App: Rest API for Key Value Store
   # Webから流されたREST APIの処理を担当
   # APIを解釈し、裏のRedis(DB)を操作する。
-  appserver:
-    image: mykvs-app:${BUILD_NUMBER}
-    container_name: mykvs-app
+  app:
+    image: ${DHUB_USER}/mykvs_app:${BUILD_NUMBER}
+    container_name: mykvs_app
     restart: always
     depends_on:
       - db
@@ -34,7 +34,7 @@ services:
   db:
     image: redis:5.0.6-alpine3.10
     restart: always
-    container_name: mykvs-db
+    container_name: mykvs_db
     volumes:
       - redis_volume:/data
 

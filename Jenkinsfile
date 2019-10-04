@@ -43,6 +43,7 @@ pipeline {
       steps {
         sh "echo 'Jenkins Build Number: ${BUILD_NUMBER}'"
         sh "echo 'BUILD_NUMBER=${BUILD_NUMBER}' > .env"
+        sh "echo 'DHUB_USER=${DHUB_USER}' >> .env"
         sh "echo 'TIME_STAMP=`date +%Y%m%d-%H%M%S-%N`' >> .env"
         sh "cat .env"
       }
@@ -68,7 +69,10 @@ pipeline {
 
     stage('Register Images') {
       steps {
-        sh "echo 'upload'"
+        sh "docker -H ssh://${BUILD_HOST} tag mykvs_app ${DHUB_USER}/mykvs_web:${BUILD_NUMBER}"
+        sh "docker -H ssh://${BUILD_HOST} tag mykvs_web ${DHUB_USER}/mykvs_app:${BUILD_NUMBER}"
+        sh "docker -H ssh://${BUILD_HOST} push ${DHUB_USER}/mykvs_web:${BUILD_NUMBER}"
+        sh "docker -H ssh://${BUILD_HOST} push ${DHUB_USER}/mykvs_app:${BUILD_NUMBER}"
       }
     }
 

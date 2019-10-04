@@ -25,7 +25,8 @@ services:
     build:
       context: ./webtest
       dockerfile: Dockerfile
-    container_name: mykvs-webtest
+    image: mykvs_webtest  
+    container_name: mykvs_webtest
     restart: always
     depends_on:
       - web
@@ -46,7 +47,8 @@ services:
     build:
       context: ./apptest
       dockerfile: Dockerfile
-    container_name: mykvs-apptest
+    image: mykvs_apptest
+    container_name: mykvs_apptest
     restart: always
     depends_on:
       - app
@@ -62,8 +64,8 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile
-    image: mykvs-web:${BUILD_NUMBER}
-    container_name: mykvs-web
+    image: mykvs_web
+    container_name: mykvs_web
     restart: always
     depends_on:
       - app
@@ -77,8 +79,8 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile
-    image: mykvs-app:${BUILD_NUMBER}
-    container_name: mykvs-app
+    image: mykvs_app
+    container_name: mykvs_app
     restart: always
     depends_on:
       - db
