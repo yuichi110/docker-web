@@ -21,11 +21,13 @@ $(function(){
 
   $('#get-button').click(function(){
     $.ajax({type:'get', url:'/api/v1/keys/'+$('#key').val(),
-      success:function(j){
-        alert(JSON.stringify(j, null, '  '))
+      success:function(j, status, xhr){
+        $('#response-body').text(JSON.stringify(j, null, '  '))
+        $('#response-code').text(xhr.status)
       }, 
       error:function(d){
-        alert(d.responseText)
+        $('#response-body').text(d.responseText)
+        $('#response-code').text(d.status)
       }
     })
   })
@@ -33,11 +35,14 @@ $(function(){
   $('#post-button').click(function(){
     $.ajax({type:'post', url:'/api/v1/keys/'+$('#key').val(), 
       data:$('#value').val(),
-      success:function(j){
+      success:function(j, status, xhr){
+        $('#response-body').text(JSON.stringify(j, null, '  '))
+        $('#response-code').text(xhr.status)
         refreshTable()
       }, 
       error:function(d){
-        alert(d.responseText)
+        $('#response-body').text(d.responseText)
+        $('#response-code').text(d.status)
       }
     })
   })
@@ -45,34 +50,44 @@ $(function(){
   $('#put-button').click(function(){
     $.ajax({type:'put', url:'/api/v1/keys/'+$('#key').val(), 
       data:$('#value').val(),
-      success:function(j){
+      success:function(j, status, xhr){
+        $('#response-body').text(JSON.stringify(j, null, '  '))
+        $('#response-code').text(xhr.status)
         refreshTable()
       }, 
       error:function(d){
-        alert(d.responseText)
+        $('#response-body').text(d.responseText)
+        $('#response-code').text(d.status)
       }
     })
   })
 
   $('#delete-button').click(function(){
     $.ajax({type:'delete', url:'/api/v1/keys/'+$('#key').val(),
-      success:function(j){
+      success:function(j, status, xhr){
+        $('#response-body').text(JSON.stringify(j, null, '  '))
+        $('#response-code').text(xhr.status)
         refreshTable()
       }, 
       error:function(d){
-        alert(d.responseText)
+        $('#response-body').text(d.responseText)
+        $('#response-code').text(d.status)
       }
     })
   })
 
   $('#key').keyup(function(){
-    var newText = 'URL: /api/v1/keys/' + $('#key').val()
+    var newText = 'Request URL: /api/v1/keys/' + $('#key').val()
     $('#key-text').text(newText)
+    $('#response-body').text('')
+    $('#response-code').text('')
   })
 
   $('#value').keyup(function(){
     var newText = 'Body: ' + $('#value').val()
     $('#value-text').text(newText)
+    $('#response-body').text('')
+    $('#response-code').text('')
   })
 
   refreshTable()

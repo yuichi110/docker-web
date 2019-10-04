@@ -39,6 +39,7 @@ pipeline {
       steps {
         sh "cat docker-compose.build.yml"
         sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml build"
+        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml stop"
         sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml up -d"
         sh "docker -H ssh://${BUILD_HOST} container ls"
       }
@@ -49,7 +50,7 @@ pipeline {
         sh "docker -H ssh://${BUILD_HOST} container exec mykvs-apptest pytest -v test_app.py"
         sh "docker -H ssh://${BUILD_HOST} container exec mykvs-webtest pytest -v test_static.py"
         sh "docker -H ssh://${BUILD_HOST} container exec mykvs-webtest pytest -v test_selenium.py"
-        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml stop"
+        //sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml stop"
       }
     }
 

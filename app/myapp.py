@@ -1,4 +1,4 @@
-import os, json, redis
+import os, json, re, redis
 from flask import Flask, jsonify, request
 
 ###
@@ -37,11 +37,11 @@ def api_keys():
 
 @app.route('/api/v1/keys/<key>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def api_key(key):
-  if not key.isalnum():
+  if not isalnum(key):
     return error(400)
   if request.method in ['POST', 'PUT']:
     body = request.get_data().decode().strip()
-    if not body.isalnum():
+    if not isalnum(body):
       return error(400)
 
   def get():
@@ -66,6 +66,10 @@ def api_key(key):
   return fdict[request.method]()
 
 # Utility
+
+_alnum_pat = re.compile(r'^[a-zA-Z0-9]+$')
+def isalnum(text):
+  return _alnum_pat.match(text) is not None
 
 def success(d):
   return (jsonify(d), 200)

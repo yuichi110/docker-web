@@ -65,11 +65,15 @@ def test_key_get_notexist():
   r = get(f'{BASEURL}/keys/lemon')
   assert r.status_code == 404
 
-def test_key_get_notalnum():
+def test_key_get_notalnum1():
   clean_and_add_keys()
   r = get(f'{BASEURL}/keys/ap_le')
   assert r.status_code == 400
 
+def test_key_get_notalnum2():
+  clean_and_add_keys()
+  r = get(f'{BASEURL}/keys/あいうえお')
+  assert r.status_code == 400
 
 ##############
 ## KEY POST ##
@@ -96,6 +100,15 @@ def test_key_post_notalnum2():
   r = post(f'{BASEURL}/keys/grape', data='pu_ple')
   assert r.status_code == 400
 
+def test_key_post_notalnum3():
+  clean_and_add_keys()
+  r = post(f'{BASEURL}/keys/あいうえお', data='purple')
+  assert r.status_code == 400
+
+def test_key_post_notalnum4():
+  clean_and_add_keys()
+  r = post(f'{BASEURL}/keys/grape', data='あいうえお')
+  assert r.status_code == 400
 
 #############
 ## KEY PUT ##
@@ -123,6 +136,15 @@ def test_key_put_notalnum2():
   r = put(f'{BASEURL}/keys/grape', data='pu_ple')
   assert r.status_code == 400
 
+def test_key_put_notalnum3():
+  clean_and_add_keys()
+  r = put(f'{BASEURL}/keys/あいうえお', data='purple')
+  assert r.status_code == 400
+
+def test_key_put_notalnum4():
+  clean_and_add_keys()
+  r = put(f'{BASEURL}/keys/grape', data='あいうえお')
+  assert r.status_code == 400
 
 ################
 ## KEY DELETE ##
@@ -139,9 +161,14 @@ def test_key_delete_notexist():
   r = delete(f'{BASEURL}/keys/grape')
   assert r.status_code == 404
 
-def test_key_delete_notalnum():
+def test_key_delete_notalnum1():
   clean_and_add_keys()
   r = delete(f'{BASEURL}/keys/ap_le')
+  assert r.status_code == 400
+
+def test_key_delete_notalnum1():
+  clean_and_add_keys()
+  r = delete(f'{BASEURL}/keys/あいうえお')
   assert r.status_code == 400
 
 
