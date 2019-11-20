@@ -80,7 +80,7 @@ services:
   db:
     image: redis:5.0.6-alpine3.10
     restart: unless-stopped
-    container_name: c4kvs_db
+    container_name: c5kvs_db
     volumes:
       - c5kvs_redis_volume:/data
 

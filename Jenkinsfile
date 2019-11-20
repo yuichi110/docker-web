@@ -28,7 +28,8 @@ pipeline {
     stage('Build') {
       steps {
         sh "cat docker-compose.build.yml"
-        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml up -d --build"
+        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml build"
+        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml up -d"
         sh "docker -H ssh://${BUILD_HOST} container ls"
       }
     }
