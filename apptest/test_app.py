@@ -21,9 +21,12 @@
 #  - Unexpected trouble happens on app server due to Bug.
 #
 
+import os
 from requests import get, post, put, delete
 
-BASEURL = 'http://app/api/v1'
+APP_HOST = os.environ['APP_HOST']
+APP_PORT = int(os.environ['APP_PORT'])
+BASEURL = 'http://{}:{}/api/v1'.format(APP_HOST, APP_PORT)
 
 ##########
 ## KEYS ##

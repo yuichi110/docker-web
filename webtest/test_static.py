@@ -1,7 +1,9 @@
+import os
 from requests import get, post, put, delete
 
-BASEURL = 'http://web'
-
+HOST = os.environ['HOST']
+HOST_PORT = int(os.environ['HOST_PORT'])
+BASEURL = 'http://{}:{}'.format(HOST, HOST_PORT)
 
 ################
 ## index.html ##

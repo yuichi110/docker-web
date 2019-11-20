@@ -5,9 +5,14 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import UnexpectedAlertPresentException
 
+SELENIUM_HUB_HOST = os.environ['SELENIUM_HUB_HOST']
+SELENIUM_HUB_PORT = int(os.environ['SELENIUM_HUB_PORT'])
 HUBURL = 'http://selenium_hub:4444/wd/hub'
-WEBURL = 'http://web/'
-APIURL = 'http://web/api/v1'
+
+WEB_HOST = os.environ['WEB_HOST']
+WEB_PORT = int(os.environ['WEB_PORT'])
+WEBURL = 'http://{}:{}/'.format(WEB_HOST, WEB_PORT)
+APIURL = 'http://{}:{}/api/v1'.format(WEB_HOST, WEB_PORT)
 
 ##################
 ### GET BUTTON ###
