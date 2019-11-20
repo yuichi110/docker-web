@@ -1,82 +1,50 @@
 pipeline {
   environment {
-    DHUB_USER = "yuichi110"
-    BUILD_HOST = "root@172.30.0.102"
-    PROD_HOST = "root@172.30.0.103"
+    DOCKERHUB_USER = "yuichi110"
+    BUILD_HOST = "root@10.149.245.105"
+    PROD_HOST = "root@10.149.245.106"
   }
 
   agent any
   stages {
-
-    stage('Check docker version') {
-      steps {
-        sh "docker --version | tee .dv-jenkins"
-        sh "docker -H ssh://${BUILD_HOST} --version | tee .dv-build"
-        sh "docker -H ssh://${PROD_HOST} --version | tee .dv-prod"
-        sh 'test "`cat .dv-jenkins`" = "`cat .dv-build`"'
-        sh 'test "`cat .dv-jenkins`" = "`cat .dv-prod`"'
-      }
-    }
-
-    stage('Check docker-compose version') {
-      steps {
-        sh "docker-compose --version | tee .dcv-jenkins"
-        sh "docker-compose -H ssh://${BUILD_HOST} --version | tee .dcv-build"
-        sh "docker-compose -H ssh://${PROD_HOST} --version | tee .dcv-prod"
-        sh 'test "`cat .dcv-jenkins`" = "`cat .dcv-build`"'
-        sh 'test "`cat .dcv-jenkins`" = "`cat .dcv-prod`"'
-      }
-    }
-
-    stage('Check login status') {
+    stage('Check Login') {
       steps {
         sh "test -f ~/.docker/config.json"
         sh "cat ~/.docker/config.json | grep docker.io"
-        sh "ssh ${BUILD_HOST} test -f /root/.docker/config.json"
-        sh "ssh ${BUILD_HOST} 'cat /root/.docker/config.json | grep docker.io'"
-        sh "ssh ${PROD_HOST} test -f /root/.docker/config.json"
-        sh "ssh ${PROD_HOST} 'cat /root/.docker/config.json | grep docker.io'"
       }
     }
-
-    stage('Make .env file') {
+    stage('Setup') {
       steps {
         sh "echo 'Jenkins Build Number: ${BUILD_NUMBER}'"
         sh "echo 'BUILD_NUMBER=${BUILD_NUMBER}' > .env"
-        sh "echo 'DHUB_USER=${DHUB_USER}' >> .env"
+        sh "echo 'DOCKERHUB_USER=${DOCKERHUB_USER}' >> .env"
         sh "echo 'TIME_STAMP=`date +%Y%m%d-%H%M%S-%N`' >> .env"
         sh "cat .env"
       }
     }
-
-    stage('Build Image') {
+    stage('Build') {
       steps {
         sh "cat docker-compose.build.yml"
-        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml build"
-        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml stop"
-        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml up -d"
+        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml up -d --build"
         sh "docker -H ssh://${BUILD_HOST} container ls"
       }
     }
-
-    stage('Test Containers') {
+    stage('Test') {
       steps {
-        sh "docker -H ssh://${BUILD_HOST} container exec mykvs_apptest pytest -v test_app.py"
-        sh "docker -H ssh://${BUILD_HOST} container exec mykvs_webtest pytest -v test_static.py"
-        sh "docker -H ssh://${BUILD_HOST} container exec mykvs_webtest pytest -v test_selenium.py"
+        sh "docker -H ssh://${BUILD_HOST} container exec c5kvs_apptest pytest -v test_app.py"
+        sh "docker -H ssh://${BUILD_HOST} container exec c5kvs_webtest pytest -v test_static.py"
+        sh "docker -H ssh://${BUILD_HOST} container exec c5kvs_webtest pytest -v test_selenium.py"
       }
     }
-
-    stage('Register Images') {
+    stage('Register') {
       steps {
-        sh "docker -H ssh://${BUILD_HOST} tag mykvs_web ${DHUB_USER}/mykvs_web:${BUILD_NUMBER}"
-        sh "docker -H ssh://${BUILD_HOST} tag mykvs_app ${DHUB_USER}/mykvs_app:${BUILD_NUMBER}"
-        sh "docker -H ssh://${BUILD_HOST} push ${DHUB_USER}/mykvs_web:${BUILD_NUMBER}"
-        sh "docker -H ssh://${BUILD_HOST} push ${DHUB_USER}/mykvs_app:${BUILD_NUMBER}"
+        sh "docker -H ssh://${BUILD_HOST} tag c5kvs_web ${DOCKERHUB_USER}/c5kvs_web:${BUILD_NUMBER}"
+        sh "docker -H ssh://${BUILD_HOST} tag c5kvs_app ${DOCKERHUB_USER}/c5kvs_app:${BUILD_NUMBER}"
+        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/mykvs_web:${BUILD_NUMBER}"
+        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/mykvs_app:${BUILD_NUMBER}"
       }
     }
-
-    stage('Deploy Image') {
+    stage('Deploy') {
       steps {
         sh "cat docker-compose.prod.yml"
         sh "docker-compose -H ssh://${PROD_HOST} -f docker-compose.prod.yml build"

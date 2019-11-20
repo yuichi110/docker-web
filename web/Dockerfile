@@ -1,8 +1,8 @@
-From nginx:1.17.3
-
-COPY ./nginx.conf /etc/nginx/nginx.conf
-COPY ./docroot/index.html /usr/share/nginx/html
+From nginx:1.17.5-alpine
 RUN mkdir /usr/share/nginx/html/static
-COPY ./docroot/static /usr/share/nginx/html/static
-
-CMD ["nginx", "-g", "daemon off;"]
+COPY ./start.sh /usr/local/bin/start.sh
+COPY ./nginx.tpl /etc/nginx/nginx.tpl
+COPY ./html/ /usr/share/nginx/html/
+ENV PORT 80
+ENV APP_SERVER "http://127.0.0.1:8080"
+CMD ["/usr/local/bin/start.sh"]

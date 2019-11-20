@@ -18,7 +18,6 @@ var refreshTable = function(){
 }
 
 $(function(){
-
   $('#get-button').click(function(){
     $.ajax({type:'get', url:'/api/v1/keys/'+$('#key').val(),
       success:function(j, status, xhr){
