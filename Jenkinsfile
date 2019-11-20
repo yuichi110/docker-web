@@ -8,19 +8,13 @@ pipeline {
 
   agent any
   stages {
-    stage('Test'){
-      steps {
-        sh "echo ${BUILD_NUMBER}"
-        sh "echo ${BUILD_TIMESTAMP}"
-      }
-    }
-    /*
     stage('Check Login') {
       steps {
         sh "test -f ~/.docker/config.json"
         sh "cat ~/.docker/config.json | grep docker.io"
       }
     }
+    /*
     stage('Setup') {
       steps {
         sh "echo 'Jenkins Build Number: ${BUILD_NUMBER}'"
@@ -30,6 +24,7 @@ pipeline {
         sh "cat .env"
       }
     }
+    */
     stage('Build') {
       steps {
         sh "cat docker-compose.build.yml"
@@ -46,12 +41,13 @@ pipeline {
     }
     stage('Register') {
       steps {
-        sh "docker -H ssh://${BUILD_HOST} tag c5kvs_web ${DOCKERHUB_USER}/c5kvs_web:${BUILD_NUMBER}"
-        sh "docker -H ssh://${BUILD_HOST} tag c5kvs_app ${DOCKERHUB_USER}/c5kvs_app:${BUILD_NUMBER}"
-        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/mykvs_web:${BUILD_NUMBER}"
-        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/mykvs_app:${BUILD_NUMBER}"
+        sh "docker -H ssh://${BUILD_HOST} tag c5kvs_web ${DOCKERHUB_USER}/c5kvs_web:${BUILD_TIMESTAMP}"
+        sh "docker -H ssh://${BUILD_HOST} tag c5kvs_app ${DOCKERHUB_USER}/c5kvs_app:${BUILD_TIMESTAMP}"
+        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/mykvs_web:${BUILD_TIMESTAMP}"
+        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/mykvs_app:${BUILD_TIMESTAMP}"
       }
     }
+    /*
     stage('Deploy') {
       steps {
         sh "cat docker-compose.prod.yml"
