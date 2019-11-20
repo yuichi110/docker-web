@@ -44,8 +44,8 @@ pipeline {
       steps {
         sh "docker -H ssh://${BUILD_HOST} tag c5kvs_web ${DOCKERHUB_USER}/c5kvs_web:${BUILD_TIMESTAMP}"
         sh "docker -H ssh://${BUILD_HOST} tag c5kvs_app ${DOCKERHUB_USER}/c5kvs_app:${BUILD_TIMESTAMP}"
-        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/mykvs_web:${BUILD_TIMESTAMP}"
-        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/mykvs_app:${BUILD_TIMESTAMP}"
+        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/c5kvs_web:${BUILD_TIMESTAMP}"
+        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/c5kvs_app:${BUILD_TIMESTAMP}"
       }
     }
     /*
