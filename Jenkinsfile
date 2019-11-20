@@ -1,12 +1,20 @@
 pipeline {
   environment {
     DOCKERHUB_USER = "yuichi110"
-    BUILD_HOST = "root@10.149.245.105"
-    PROD_HOST = "root@10.149.245.106"
+    BUILD_HOST = "root@10.149.245.115"
+    PROD_HOST = "root@10.149.245.116"
+    BUILD_TIMESTAMP = sh(script: "date +%Y%m%d.%H%M%S", returnStdout: true).trim()
   }
 
   agent any
   stages {
+    stage('Test'){
+      steps {
+        sh "echo ${BUILD_NUMBER}"
+        sh "echo ${BUILD_TIMESTAMP}"
+      }
+    }
+    /*
     stage('Check Login') {
       steps {
         sh "test -f ~/.docker/config.json"
@@ -52,5 +60,6 @@ pipeline {
         sh "docker -H ssh://${PROD_HOST} container ls"
       }
     }
+    */
   }
 }
