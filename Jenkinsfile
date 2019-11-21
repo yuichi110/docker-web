@@ -7,7 +7,7 @@ pipeline {
     BUILD_TIMESTAMP = sh(script: "date +%Y%m%d.%H%M%S", returnStdout: true).trim()
   }
   stages {
-    stage('Check Login') {
+    stage('Pre Check') {
       steps {
         sh "test -f ~/.docker/config.json"
         sh "cat ~/.docker/config.json | grep docker.io"
