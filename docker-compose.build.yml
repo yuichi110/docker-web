@@ -85,10 +85,8 @@ services:
       - c5kvs_redis_volume:/data
 
 volumes:
-  c5kvs_selenium_volume:
-    driver: local
-
-volumes:
   c5kvs_redis_volume:
     driver: local
 
+  c5kvs_selenium_volume:
+    driver: local
