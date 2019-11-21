@@ -28,7 +28,7 @@ services:
       - selenium_hub
     tty: true
     volumes:
-      - ./webtest/images:/test/images/
+      - c5kvs_selenium_volume:/src/images/
     environment:
       WEB_HOST: web
       WEB_PORT: 80
@@ -83,6 +83,10 @@ services:
     container_name: c5kvs_db
     volumes:
       - c5kvs_redis_volume:/data
+
+volumes:
+  c5kvs_selenium_volume:
+    driver: local
 
 volumes:
   c5kvs_redis_volume:
