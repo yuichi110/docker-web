@@ -78,7 +78,7 @@ def get_driver_elements():
 def take_screenshot(driver, title):
   today = datetime.datetime.today()
   timestamp = today.strftime("%Y%m%d%H%M%S")
-  driver.save_screenshot(f'images/{timestamp}-{title}.png')
+  driver.save_screenshot(f'/images/{timestamp}-{title}.png')
 
 def clean():
   r = requests.get(f'{APIURL}/keys/')

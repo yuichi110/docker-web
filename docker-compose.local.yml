@@ -1,5 +1,5 @@
 version: '3.7'
-
+      
 services:
   selenium_chrome:
     image: selenium/node-chrome:3.141.59-vanadium
@@ -19,7 +19,7 @@ services:
   webtest:
     build:
       context: ./webtest
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     image: c5kvs_webtest  
     container_name: c5kvs_webtest
     restart: unless-stopped
@@ -27,18 +27,19 @@ services:
       - web
       - selenium_hub
     tty: true
-    volumes:
-      - ./webtest/images:/test/images/
     environment:
       WEB_HOST: web
       WEB_PORT: 80
       SELENIUM_HUB_HOST: selenium_hub
       SELENIUM_HUB_PORT: 4444
+    volumes:
+      - ./webtest/src:/src
+      - ./webtest/images:/images
 
   apptest:
     build:
       context: ./apptest
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     image: c5kvs_apptest
     container_name: c5kvs_apptest
     restart: unless-stopped
@@ -48,11 +49,13 @@ services:
     environment:
       APP_HOST: app
       APP_PORT: 80
-      
+    volumes:
+      - ./apptest/src:/src
+
   web: 
     build:
       context: ./web
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.build
     image: c5kvs_web
     container_name: c5kvs_web
     restart: unless-stopped
@@ -62,20 +65,27 @@ services:
       - 8080:80
     environment:
       APP_SERVER: http://app:80
+    volumes:
+      - ./web/html:/usr/share/nginx/html
 
   app:
     build:
       context: ./app
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.build
     image: c5kvs_app
     container_name: c5kvs_app
     restart: unless-stopped
     depends_on:
       - db
+    ports:
+      - 8081:80
     environment:
+      DEBUG: "true"
       REDIS_HOST: db
       REDIS_PORT: 6379
       REDIS_DB: 0
+    volumes:
+      - ./app/src:/src
 
   db:
     image: redis:5.0.6-alpine3.10

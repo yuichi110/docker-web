@@ -6,6 +6,7 @@ REDIS_PORT = int(os.environ['REDIS_PORT'])
 REDIS_DB = int(os.environ['REDIS_DB'])
 REDIS = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 APP_PORT = int(os.environ['PORT'])
+DEBUG = os.environ['DEBUG'].lower() == 'true'
 app = Flask('app server')
 
 @app.route('/api/v1/keys/', methods=['GET'])
@@ -79,4 +80,4 @@ def method_not_allowed_error(error):
 def internal_server_error(error):
   return (jsonify({'error':'server internal error', 'code':500}), 500)
 
-app.run(debug=False, host='0.0.0.0', port=APP_PORT)
+app.run(debug=DEBUG, host='0.0.0.0', port=APP_PORT)
