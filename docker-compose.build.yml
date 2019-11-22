@@ -55,7 +55,7 @@ services:
       dockerfile: Dockerfile.build
     image: c5kvs_web
     container_name: c5kvs_web
-    restart: unless-stopped
+    restart: no
     depends_on:
       - app
     ports:
@@ -70,7 +70,7 @@ services:
       dockerfile: Dockerfile.build
     image: c5kvs_app
     container_name: c5kvs_app
-    restart: unless-stopped
+    restart: no
     depends_on:
       - db
     environment:
@@ -80,7 +80,7 @@ services:
 
   db:
     image: redis:5.0.6-alpine3.10
-    restart: unless-stopped
+    restart: no
     container_name: c5kvs_db
     volumes:
       - c5kvs_redis_volume:/data
