@@ -192,7 +192,6 @@ def clean():
   r = get(f'{BASEURL}/keys/')
   for key in r.json():
     delete(f'{BASEURL}/keys/{key}')
-
   num_keys = len(get(f'{BASEURL}/keys/').json())
   assert 0 == num_keys
 

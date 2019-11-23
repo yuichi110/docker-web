@@ -76,15 +76,14 @@ $(function(){
   })
 
   $('#key').keyup(function(){
-    var newText = 'Request URL: /api/v1/keys/' + $('#key').val()
-    $('#key-text').text(newText)
+    var newText = '/api/v1/keys/' + $('#key').val()
+    $('#request-url').text(newText)
     $('#response-body').text('')
     $('#response-code').text('')
   })
 
   $('#value').keyup(function(){
-    var newText = 'Body: ' + $('#value').val()
-    $('#value-text').text(newText)
+    $('#request-body').text($('#value').val())
     $('#response-body').text('')
     $('#response-code').text('')
   })
