@@ -26,7 +26,7 @@ from requests import get, post, put, delete
 
 APP_HOST = os.environ['APP_HOST']
 APP_PORT = int(os.environ['APP_PORT'])
-BASEURL = 'http://{}:{}/api/v1'.format(APP_HOST, APP_PORT)
+BASEURL = f'http://{APP_HOST}:{APP_PORT}/api/v1'
 
 ##########
 ## KEYS ##

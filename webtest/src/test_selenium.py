@@ -1,18 +1,16 @@
 import os, sys, time, datetime, requests, json
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import UnexpectedAlertPresentException
 
 SELENIUM_HUB_HOST = os.environ['SELENIUM_HUB_HOST']
 SELENIUM_HUB_PORT = int(os.environ['SELENIUM_HUB_PORT'])
-HUBURL = 'http://selenium_hub:4444/wd/hub'
-
+HUBURL = f'http://{SELENIUM_HUB_HOST}:{SELENIUM_HUB_PORT}/wd/hub'
 WEB_HOST = os.environ['WEB_HOST']
 WEB_PORT = int(os.environ['WEB_PORT'])
-WEBURL = 'http://{}:{}/'.format(WEB_HOST, WEB_PORT)
-APIURL = 'http://{}:{}/api/v1'.format(WEB_HOST, WEB_PORT)
+WEBURL = f'http://{WEB_HOST}:{WEB_PORT}/'
+APIURL = WEBURL + 'api/v1'
 
 ##################
 ### GET BUTTON ###

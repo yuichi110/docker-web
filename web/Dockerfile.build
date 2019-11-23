@@ -1,5 +1,4 @@
 From nginx:1.17.5-alpine
-RUN mkdir /usr/share/nginx/html/static
 COPY ./start.sh /usr/local/bin/start.sh
 COPY ./nginx.tpl /etc/nginx/nginx.tpl
 COPY ./html/ /usr/share/nginx/html/

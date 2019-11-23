@@ -53,7 +53,7 @@ services:
   web: 
     build:
       context: ./web
-      dockerfile: Dockerfile.build
+      dockerfile: Dockerfile.local
     image: c5kvs_web
     container_name: c5kvs_web
     restart: unless-stopped
