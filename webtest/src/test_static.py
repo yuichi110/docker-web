@@ -53,6 +53,6 @@ def test_js_bootstrap():
   assert r.status_code == 200
 
 def test_js_mykvs():
-  r = get(f'{BASEURL}/static/js/mykvs.js')
+  r = get(f'{BASEURL}/static/js/kvs.js')
   assert r.status_code == 200
 
