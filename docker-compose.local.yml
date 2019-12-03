@@ -19,7 +19,7 @@ services:
   webtest:
     build:
       context: ./webtest
-      dockerfile: Dockerfile.local
+      dockerfile: Dockerfile
     image: c5kvs_webtest  
     container_name: c5kvs_webtest
     restart: unless-stopped
@@ -38,7 +38,7 @@ services:
   apptest:
     build:
       context: ./apptest
-      dockerfile: Dockerfile.local
+      dockerfile: Dockerfile
     image: c5kvs_apptest
     container_name: c5kvs_apptest
     restart: unless-stopped
@@ -53,7 +53,7 @@ services:
   web: 
     build:
       context: ./web
-      dockerfile: Dockerfile.local
+      dockerfile: Dockerfile
     image: c5kvs_web
     container_name: c5kvs_web
     restart: unless-stopped
@@ -69,7 +69,7 @@ services:
   app:
     build:
       context: ./app
-      dockerfile: Dockerfile.build
+      dockerfile: Dockerfile
     image: c5kvs_app
     container_name: c5kvs_app
     restart: unless-stopped
