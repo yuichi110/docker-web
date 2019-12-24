@@ -3,25 +3,23 @@ version: '3.7'
 services:
   selenium_chrome:
     image: selenium/node-chrome:3.141.59-vanadium
-    container_name: c5kvs_selenium_chrome
+    container_name: dockerkvs_selenium_chrome
     depends_on:
       - selenium_hub
     environment:
       - HUB_HOST=selenium_hub
       - HUB_PORT=4444
-
   selenium_hub:
     image: selenium/hub:3.141.59-vanadium
-    container_name: c5kvs_selenium_hub
+    container_name: dockerkvs_selenium_hub
     ports:
       - 4444:4444
-
   webtest:
     build:
       context: ./webtest
       dockerfile: Dockerfile
-    image: c5kvs_webtest  
-    container_name: c5kvs_webtest
+    image: dockerkvs_webtest  
+    container_name: dockerkvs_webtest
     restart: unless-stopped
     depends_on:
       - web
@@ -34,13 +32,12 @@ services:
     volumes:
       - ./webtest/src:/src
       - ./webtest/images:/images
-
   apptest:
     build:
       context: ./apptest
       dockerfile: Dockerfile
-    image: c5kvs_apptest
-    container_name: c5kvs_apptest
+    image: dockerkvs_apptest
+    container_name: dockerkvs_apptest
     restart: unless-stopped
     depends_on:
       - app
@@ -54,8 +51,8 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile
-    image: c5kvs_web
-    container_name: c5kvs_web
+    image: dockerkvs_web
+    container_name: dockerkvs_web
     restart: unless-stopped
     depends_on:
       - app
@@ -65,13 +62,12 @@ services:
       APP_SERVER: http://app:80
     volumes:
       - ./web/html:/usr/share/nginx/html
-
   app:
     build:
       context: ./app
       dockerfile: Dockerfile
-    image: c5kvs_app
-    container_name: c5kvs_app
+    image: dockerkvs_app
+    container_name: dockerkvs_app
     restart: unless-stopped
     depends_on:
       - db
@@ -84,14 +80,13 @@ services:
       REDIS_DB: 0
     volumes:
       - ./app/src:/src
-
   db:
     image: redis:5.0.6-alpine3.10
     restart: unless-stopped
-    container_name: c5kvs_db
+    container_name: dockerkvs_db
     volumes:
-      - c5kvs_redis_volume:/data
+      - dockerkvs_redis_volume:/data
 
 volumes:
-  c5kvs_redis_volume:
+  dockerkvs_redis_volume:
     driver: local
