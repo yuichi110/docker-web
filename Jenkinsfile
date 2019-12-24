@@ -25,18 +25,18 @@ pipeline {
     }
     stage('Test') {
       steps {
-        sh "docker -H ssh://${BUILD_HOST} container exec c5kvs_apptest pytest -v test_app.py"
-        sh "docker -H ssh://${BUILD_HOST} container exec c5kvs_webtest pytest -v test_static.py"
-        sh "docker -H ssh://${BUILD_HOST} container exec c5kvs_webtest pytest -v test_selenium.py"
+        sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_apptest pytest -v test_app.py"
+        sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_webtest pytest -v test_static.py"
+        sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_webtest pytest -v test_selenium.py"
         sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml down"
       }
     }
     stage('Register') {
       steps {
-        sh "docker -H ssh://${BUILD_HOST} tag c5kvs_web ${DOCKERHUB_USER}/c5kvs_web:${BUILD_TIMESTAMP}"
-        sh "docker -H ssh://${BUILD_HOST} tag c5kvs_app ${DOCKERHUB_USER}/c5kvs_app:${BUILD_TIMESTAMP}"
-        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/c5kvs_web:${BUILD_TIMESTAMP}"
-        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/c5kvs_app:${BUILD_TIMESTAMP}"
+        sh "docker -H ssh://${BUILD_HOST} tag dockerkvs_web ${DOCKERHUB_USER}/dockerkvs_web:${BUILD_TIMESTAMP}"
+        sh "docker -H ssh://${BUILD_HOST} tag dockerkvs_app ${DOCKERHUB_USER}/dockerkvs_app:${BUILD_TIMESTAMP}"
+        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/dockerkvs_web:${BUILD_TIMESTAMP}"
+        sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/dockerkvs_app:${BUILD_TIMESTAMP}"
       }
     }
     stage('Deploy') {
