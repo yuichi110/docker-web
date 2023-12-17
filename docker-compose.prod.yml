@@ -7,7 +7,7 @@ services:
     depends_on:
       - app
     ports:
-      - 80:80
+      - 8080:80
     environment:
       APP_SERVER: http://app:80
   app:
