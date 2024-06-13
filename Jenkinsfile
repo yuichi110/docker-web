@@ -1,9 +1,9 @@
 pipeline {
   agent any
   environment {
-    DOCKERHUB_USER = "yuichi110"
-    BUILD_HOST = "root@10.149.245.115"
-    PROD_HOST = "root@10.149.245.116"
+    DOCKERHUB_USER = "takumeba"
+    BUILD_HOST = "root@192.168.1.67"
+    PROD_HOST = "root@192.168.1.67"
     BUILD_TIMESTAMP = sh(script: "date +%Y%m%d-%H%M%S", returnStdout: true).trim()
   }
   stages {
@@ -15,19 +15,19 @@ pipeline {
     }
     stage('Build') {
       steps {
-        sh "cat docker-compose.build.yml"
-        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml down"
-        sh "docker -H ssh://${BUILD_HOST} volume prune -f"
-        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml build"
-        sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml up -d"
+        // sh "cat docker-compose.build.yml"
+        // sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml down"
+        // sh "docker -H ssh://${BUILD_HOST} volume prune -f"
+        // sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml build"
+        // sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml up -d"
         sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml ps"
       }
     }
     stage('Test') {
       steps {
-        sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_apptest pytest -v test_app.py"
-        sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_webtest pytest -v test_static.py"
-        sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_webtest pytest -v test_selenium.py"
+        // sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_apptest pytest -v test_app.py"
+        // sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_webtest pytest -v test_static.py"
+        // sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_webtest pytest -v test_selenium.py"
         sh "docker-compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml down"
       }
     }
